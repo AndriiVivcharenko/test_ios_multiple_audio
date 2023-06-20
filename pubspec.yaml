@@ -33,6 +33,7 @@ dependencies:
 
   audioplayers: ^4.1.0
   just_audio: ^0.9.34
+  soundpool: ^2.3.0
 
 
   # The following adds the Cupertino Icons font to your application.
