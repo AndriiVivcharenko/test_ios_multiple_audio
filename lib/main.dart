@@ -1,8 +1,7 @@
-import 'dart:html';
-
-import 'package:audioplayers/audioplayers.dart';
+// import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
+
+import 'package:test_ios_multiple_audio_channels/audio_wrapper.dart';
 
 void main() {
   runApp(const MyApp());
@@ -64,8 +63,11 @@ class _MyHomePageState extends State<MyHomePage> {
   // final audio = AudioPlayer();
   // final audio2 = AudioPlayer();
 
-  final audio = AudioPlayer();
-  final audio2 = AudioPlayer();
+  // final audio = AudioPlayer();
+  // final audio2 = AudioPlayer();
+
+  WebAudioAPISound? audio;
+  WebAudioAPISound? audio2;
 
   bool _initDone = true;
 
@@ -84,49 +86,46 @@ class _MyHomePageState extends State<MyHomePage> {
   void initState() {
     super.initState();
 
-    Future.delayed(Duration(seconds: 3), () {
-      _playAudio1();
-      _playAudio2();
-    });
+    // Future.delayed(const Duration(seconds: 3), () {
+    //   _playAudio1();
+    //   _playAudio2();
+    // });
   }
 
   void _init() async {
-    _initDone = false;
+    // _initDone = false;
 
-    var audioContext = const AudioContext();
-    var gainNode = audioContext.createGain();
+    // setState(() {});
+    // const url1 =
+    //     "https://firebasestorage.googleapis.com/v0/b/chat-6f260.appspot.com/o/music%2FhighIntensity%2Fhighintensity10__BPM148.mp3?alt=media&token=2bb8bea5-e087-4aee-82aa-5671f257ebe8";
+    // const url2 =
+    //     "https://firebasestorage.googleapis.com/v0/b/chat-6f260.appspot.com/o/music%2FhighIntensity%2Fhighintensity14__BPM130.mp3?alt=media&token=b861da7b-a23a-4027-84e3-15787596870d";
 
-    setState(() {});
-    final url1 =
-        "https://firebasestorage.googleapis.com/v0/b/chat-6f260.appspot.com/o/music%2FhighIntensity%2Fhighintensity10__BPM148.mp3?alt=media&token=2bb8bea5-e087-4aee-82aa-5671f257ebe8";
-    final url2 =
-        "https://firebasestorage.googleapis.com/v0/b/chat-6f260.appspot.com/o/music%2FhighIntensity%2Fhighintensity14__BPM130.mp3?alt=media&token=b861da7b-a23a-4027-84e3-15787596870d";
+    // await audio.setSource(UrlSource(url1));
+    // print("audio setSource");
+    // await audio2.setSource(UrlSource(url2));
+    // print("audio2 setSource");
 
-    await audio.setSource(UrlSource(url1));
-    print("audio setSource");
-    await audio2.setSource(UrlSource(url2));
-    print("audio2 setSource");
+    // print("audio resume");
+    // await audio.resume();
+    // print("audio pause");
+    // await audio.pause();
 
-    print("audio resume");
-    await audio.resume();
-    print("audio pause");
-    await audio.pause();
+    // print("audio2 resume");
+    // await audio2.resume();
+    // print("audio2 pause");
+    // await audio2.pause();
 
-    print("audio2 resume");
-    await audio2.resume();
-    print("audio2 pause");
-    await audio2.pause();
+    // _initDone = true;
+    // setState(() {});
 
-    _initDone = true;
-    setState(() {});
-
-    print("delayed");
-    Future.delayed(Duration(seconds: 5), () {
-      print("playAudio1");
-      _playAudio1();
-      print("playAudio2");
-      _playAudio2();
-    });
+    // print("delayed");
+    // Future.delayed(Duration(seconds: 5), () {
+    //   print("playAudio1");
+    //   _playAudio1();
+    //   print("playAudio2");
+    //   _playAudio2();
+    // });
   }
 
   void _playAudio1() async {
@@ -138,10 +137,13 @@ class _MyHomePageState extends State<MyHomePage> {
     //
     // print(blob.size);
 
-    final url1 =
+    const url1 =
         "https://firebasestorage.googleapis.com/v0/b/chat-6f260.appspot.com/o/music%2FlowIntensity%2Flowintensity10__BPM72.mp3?alt=media&token=a2a81764-32aa-448a-9745-eb2aab73b5fc";
 
-    audio.play(UrlSource(url1));
+    audio = WebAudioAPISound(url1, Options(loop: true));
+    audio?.play();
+
+    print('Audio player 1');
 
     // await audio.play(UrlSource(Url.createObjectUrlFromBlob(blob)));
   }
@@ -159,10 +161,15 @@ class _MyHomePageState extends State<MyHomePage> {
 
     // final blob = Blob(file.bodyBytes);
 
-    final url2 =
+    const url2 =
         "https://firebasestorage.googleapis.com/v0/b/chat-6f260.appspot.com/o/music%2FlowIntensity%2Flowintensity14__BPM60.mp3?alt=media&token=bbf3fa19-12c7-48d7-9bb1-8c2edbf19e66";
 
-    audio2.play(UrlSource(url2));
+    // audio2.play(UrlSource(url2));
+
+    audio2 = WebAudioAPISound(url2, Options(loop: true));
+    audio2?.play();
+
+    print('Audio player 2');
 
     // print(file.bodyBytes);
 
@@ -179,7 +186,7 @@ class _MyHomePageState extends State<MyHomePage> {
     // than having to individually change instances of widgets.
     return Scaffold(
       appBar: AppBar(
-        actions: [],
+        actions: const [],
         // TRY THIS: Try changing the color here to a specific color (to
         // Colors.amber, perhaps?) and trigger a hot reload to see the AppBar
         // change color while the other colors stay the same.
@@ -216,25 +223,27 @@ class _MyHomePageState extends State<MyHomePage> {
 
                   _init();
                 },
-                child: Text("Init")),
+                child: const Text("Init")),
             ElevatedButton(
                 onPressed: () async {
                   _playAudio1();
                 },
-                child: Text("Play 1")),
+                child: const Text("Play 1")),
             ElevatedButton(
                 onPressed: () {
-                  audio.pause();
+                  audio?.stop();
                 },
-                child: Text("Pause 1")),
+                child: const Text("Pause 1")),
             ElevatedButton(
                 onPressed: () async {
                   _playAudio2();
                 },
-                child: Text("Play 2")),
-            ElevatedButton(onPressed: () {
-              audio2.pause();
-            }, child: Text("Pause 2")),
+                child: const Text("Play 2")),
+            ElevatedButton(
+                onPressed: () {
+                  audio2?.stop();
+                },
+                child: const Text("Pause 2")),
             const Text(
               'You have pushed the button this many times:',
             ),
