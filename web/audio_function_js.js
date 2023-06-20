@@ -50,7 +50,7 @@ WebAudioAPISoundManager = class {
         if(this.playingSounds.hasOwnProperty(url)){
             for(var i in this.playingSounds[url]){
                 if(this.playingSounds[url].hasOwnProperty(i))
-                    this.playingSounds[url][i].noteOff(0);
+                    this.playingSounds[url][i].stop(0);
             }
         }
     }
