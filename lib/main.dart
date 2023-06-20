@@ -1,4 +1,3 @@
-
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -77,6 +76,9 @@ class _MyHomePageState extends State<MyHomePage> {
   int id2 = 0;
   int id2Playing = 0;
 
+  double duration1 = 0;
+  double duration2 = 0;
+
   void _incrementCounter() {
     setState(() {
       // This call to setState tells the Flutter framework that something has
@@ -96,25 +98,37 @@ class _MyHomePageState extends State<MyHomePage> {
     final url2 =
         "https://firebasestorage.googleapis.com/v0/b/chat-6f260.appspot.com/o/music%2FhighIntensity%2Fhighintensity14__BPM130.mp3?alt=media&token=b861da7b-a23a-4027-84e3-15787596870d";
 
+    soundpool.loadUri(url1).then((value) {
+      id1 = value;
 
-    soundpool.loadUri(url1).then((value) => id1 = value);
-    soundpool.loadUri(url2).then((value) => id2 = value);
+      soundpool.getDuration(id1).then((value) {
+        duration1 = value;
+        print(value);
+        setState(() {});
+      });
+    });
 
-    // Future.delayed(Duration(seconds: 3), () {
+    soundpool.loadUri(url2).then((value) {
+      id2 = value;
+      soundpool.getDuration(id2).then((value) {
+        duration2 = value;
+        print(value);
+        setState(() {});
+      });
+    });
+
+    // Future.delayed(Duration(seconds: 5), () {
     //   _playAudio1();
     //   _playAudio2();
     // });
   }
 
   void _init() async {
-
-    _playAudio1();
-    _playAudio2();
+    // _playAudio1();
+    // _playAudio2();
     return;
 
     _initDone = false;
-
-
 
     setState(() {});
     final url1 =
@@ -158,7 +172,11 @@ class _MyHomePageState extends State<MyHomePage> {
     //
     // print(blob.size);
 
-    id1Playing = await soundpool.play(id1);
+    if (!(await soundpool.resume(id1))) {
+      id1Playing = await soundpool.play(id1, offset: 50);
+    }
+
+    setState(() {});
 
     // final url1 =
     //     "https://firebasestorage.googleapis.com/v0/b/chat-6f260.appspot.com/o/music%2FlowIntensity%2Flowintensity10__BPM72.mp3?alt=media&token=a2a81764-32aa-448a-9745-eb2aab73b5fc";
@@ -181,9 +199,11 @@ class _MyHomePageState extends State<MyHomePage> {
 
     // final blob = Blob(file.bodyBytes);
 
-    id2Playing = await soundpool.play(id2);
+    if (!(await soundpool.resume(id2))) {
+      id2Playing = await soundpool.play(id2);
+    }
 
-
+    setState(() {});
     // final url2 =
     //     "https://firebasestorage.googleapis.com/v0/b/chat-6f260.appspot.com/o/music%2FlowIntensity%2Flowintensity14__BPM60.mp3?alt=media&token=bbf3fa19-12c7-48d7-9bb1-8c2edbf19e66";
 
@@ -242,6 +262,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   _init();
                 },
                 child: Text("Init")),
+            Text("Duration: $duration1"),
             ElevatedButton(
                 onPressed: () async {
                   _playAudio1();
@@ -253,15 +274,18 @@ class _MyHomePageState extends State<MyHomePage> {
                   soundpool.pause(id1Playing);
                 },
                 child: Text("Pause 1")),
+            Text("Duration: $duration2"),
             ElevatedButton(
                 onPressed: () async {
                   _playAudio2();
                 },
                 child: Text("Play 2")),
-            ElevatedButton(onPressed: () {
-              audio2.pause();
-              soundpool.pause(id2Playing);
-            }, child: Text("Pause 2")),
+            ElevatedButton(
+                onPressed: () {
+                  audio2.pause();
+                  soundpool.pause(id2Playing);
+                },
+                child: Text("Pause 2")),
             const Text(
               'You have pushed the button this many times:',
             ),
